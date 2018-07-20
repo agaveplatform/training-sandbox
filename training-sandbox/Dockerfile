@@ -1,4 +1,4 @@
-FROM ssh-sandbox:latest
+FROM agaveplatform/ssh-sandbox:latest
 
 MAINTAINER Rion Dooley <dooley@tacc.utexas.edu>
 
