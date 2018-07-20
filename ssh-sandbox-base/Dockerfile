@@ -43,7 +43,8 @@ RUN chmod 700 /home/$TEST_USERNAME/.ssh && \
     chown -R $TEST_USERNAME /home/$TEST_USERNAME/.ssh && \
     find /home/jovyan | xargs chown jovyan
 
-RUN pip install supervisor
+RUN pip install supervisor && \
+    apt-get install -y tzdata
 
 ADD supervisord.conf /etc/supervisord.conf
 ARG BUILD_DATE
