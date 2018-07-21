@@ -70,9 +70,15 @@ COPY bin/ /usr/local/bin/
 COPY etc/supervisord.conf /etc/supervisord.conf
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY bashrc /home/$TEST_USERNAME/.bashrc
+COPY singularitycheck.sh /home/$TEST_USERNAME/.singularitycheck.sh
 
 RUN chown $TEST_USERNAME:$TEST_USERNAME /home/$TEST_USERNAME/.bashrc && \
-    chown -R $TEST_USERNAME /home/$TEST_USERNAME/.ngrok2
+    chown -R $TEST_USERNAME /home/$TEST_USERNAME/.ngrok2 && \
+    chown -R $TEST_USERNAME /home/$TEST_USERNAME/.singularitycheck.sh
+
+# add the check file to determine whether the login is coming from a singularity
+# container and, if so, invoke a singularity shell rather than a login shell
+RUN echo "command=\"/home/$TEST_USERNAME/.singularitycheck.sh\" $(cat /home/$TEST_USERNAME/.ssh/id_rsa.pub)" > /home/$TEST_USERNAME/.ssh/authorized_keys
 
 ENV export PYTHONIOENCODING=UTF-8
 ENV export LC_CTYPE=en_US.UTF-8
