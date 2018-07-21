@@ -54,7 +54,19 @@ ENV AGAVE_JSON_PARSER jq
 ENV AGAVE_CLI_COMPLETION_SHOW_FILES no
 ENV AGAVE_CLI_COMPLETION_SHOW_FILE_PATHS no
 ENV AGAVE_CLI_COMPLETION_CACHE_LIFETIME 0
-RUN tenants-init -t agave.prod -v
+RUN echo '#!/bin/sh \
+    \n\
+    \n# set the default agave environment variables \
+    \n\
+    \nexport AGAVE_JSON_PARSER=jq \
+    \nexport AGAVE_CLI_COMPLETION_SHOW_FILES=no \
+    \nexport AGAVE_CLI_COMPLETION_SHOW_FILE_PATHS=no \
+    \nexport AGAVE_CLI_COMPLETION_CACHE_LIFETIME=0 \
+    \n\
+    \nexport PATH=$PATH:/usr/local/agave-cli/bin \
+    \n' > /etc/profile.d/agave.sh && \
+    chmod 755 /etc/profile.d/agave.sh
+
 
 
 # install ngrok for tunneling behind firewall and router
@@ -80,8 +92,11 @@ RUN chown $TEST_USERNAME:$TEST_USERNAME /home/$TEST_USERNAME/.bashrc && \
 # container and, if so, invoke a singularity shell rather than a login shell
 RUN echo "command=\"/home/$TEST_USERNAME/.singularitycheck.sh\" $(cat /home/$TEST_USERNAME/.ssh/id_rsa.pub)" > /home/$TEST_USERNAME/.ssh/authorized_keys
 
+# update pip and install the gitchangelog library to bootstrap commit histories into a chanagelog file.
+RUN pip install --upgrade pip gitchangelog pystache && \
+    echo 'export PYTHONIOENCODING=UTF-8' >> /home/$TEST_USERNAME/.bashrc
+
 ENV export PYTHONIOENCODING=UTF-8
-ENV export LC_CTYPE=en_US.UTF-8
 
 EXPOSE 22 4040
 
