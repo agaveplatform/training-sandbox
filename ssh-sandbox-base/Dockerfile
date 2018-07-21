@@ -30,8 +30,7 @@ RUN mkdir -p /var/run/sshd && \
     sed -ri 's/^PermitRootLogin\s+.*/PermitRootLogin no/' /etc/ssh/sshd_config && \
     sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config; \
     sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd; \
-    sed -i 's/^exit 0/service ssh start\nexit 0/' /etc/rc.local && \
-    /usr/bin/ssh-keygen -A
+    sed -i 's/^exit 0/service ssh start\nexit 0/' /etc/rc.local
 
 ADD ssh/id_rsa.pub /home/$TEST_USERNAME/.ssh/authorized_keys
 ADD ssh/id_rsa.pub /home/$TEST_USERNAME/.ssh/id_rsa.pub
