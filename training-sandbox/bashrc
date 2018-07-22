@@ -120,27 +120,6 @@ fi
 # expand aliases in non-interactive shells
 shopt -s expand_aliases
 
-# Put the full path to a singularity image in the file $HOME/sing.txt.
-if [ -r $HOME/work/sing.txt ]
-then
-    IMAGE=$(cat $HOME/work/sing.txt)
-fi
-if [ "$IMAGE" != "" ]
-then
-    if [ -r "$IMAGE" ]
-    then
-        # If the SINGULARITY_CONTAINER variable is set,
-        # then we are already in the container
-        if [ "$SINGULARITY_CONTAINER" == "" ]
-        then
-            # Switch to running inside singularity
-            exec singularity exec $IMAGE bash --login
-        fi
-    else
-        echo Could not read image file $IMAGE
-    fi
-fi
-
 
 # helper functions to obtain the ngrok host and port from the environment
 function ngrok_url() {
